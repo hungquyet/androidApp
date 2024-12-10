@@ -1,0 +1,19 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Khi TextView được focus -->
+    <item android:state_focused="true">
+        <shape>
+            <solid android:color="#727B82"/> <!-- Màu nền khi focus -->
+            <stroke android:color="#727B82" android:width="2dp"/> <!-- Màu viền -->
+            <corners android:radius="6dp"/> <!-- Bo tròn góc (tuỳ chỉnh) -->
+        </shape>
+    </item>
+
+    <!-- Khi TextView không được focus -->
+    <item>
+        <shape>
+            <solid android:color="#FFFFFF"/> <!-- Màu nền khi không focus -->
+            <stroke android:color="#727B82" android:width="2dp"/> <!-- Màu viền -->
+            <corners android:radius="6dp"/> <!-- Bo tròn góc (tuỳ chỉnh) -->
+        </shape>
+    </item>
+</selector>

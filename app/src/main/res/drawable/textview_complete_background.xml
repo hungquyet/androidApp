@@ -1,0 +1,10 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item>
+        <shape>
+            <solid android:color="@color/orange"/> <!-- Màu nền khi không focus -->
+            <stroke android:color="#CCCCCC" android:width="1dp"/> <!-- Màu viền -->
+            <corners android:radius="6dp"/> <!-- Bo tròn góc (tuỳ chỉnh) -->
+        </shape>
+    </item>
+</selector>
