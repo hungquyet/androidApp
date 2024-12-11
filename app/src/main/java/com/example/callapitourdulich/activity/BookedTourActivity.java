@@ -44,6 +44,9 @@ public class BookedTourActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        if(getSupportActionBar() != null){
+            getSupportActionBar().hide();
+        }
 
         initUI();
         fetchBookedTours();

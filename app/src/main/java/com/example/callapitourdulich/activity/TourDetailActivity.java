@@ -35,6 +35,7 @@ import com.google.gson.Gson;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -50,11 +51,12 @@ public class TourDetailActivity extends AppCompatActivity {
 
     private ImageView img_header, img_back;
     private TextView tv_name, tv_departureLocation, tv_description, tv_destination, tv_startDate, tv_days, tv_idTour, tv_price;
-    private Button btn_bookTour, btn_completeBooking;
+    private Button btn_bookTour, btn_completeBooking, btn_infor, btn_schedule;
     private RecyclerView rcv_imageTourDetail;
     private TourDetailImageAdapter tourDetailImageAdapter;
     private TextInputEditText edt_name, edt_phoneNumber, edt_note, edt_amount;
     private String tourName;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,7 +101,6 @@ public class TourDetailActivity extends AppCompatActivity {
         rcv_imageTourDetail = findViewById(R.id.rcv_imageTourDetail);
         btn_bookTour = findViewById(R.id.btn_bookTour);
 
-
         btn_bookTour.setOnClickListener(view -> {
             BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(TourDetailActivity.this, R.style.RoundedBottomSheetDialog);
             bottomSheetDialog.setContentView(R.layout.dialog_booking);
@@ -116,6 +117,7 @@ public class TourDetailActivity extends AppCompatActivity {
                 String phoneNumber = edt_phoneNumber.getText().toString().trim();
                 String note = edt_note.getText().toString().trim();
                 String amountStr = edt_amount.getText().toString().trim();
+                String status = "Đang xử lý";
 
                 // Nhận user_id, tour_id, tour_name từ Intent
                 int tourId = getIntent().getIntExtra("tour_id", -1);
@@ -151,6 +153,7 @@ public class TourDetailActivity extends AppCompatActivity {
                 bookingDTO.setStart_date(startDate);
                 bookingDTO.setTour_id(tourId);
                 bookingDTO.setTour_name(tourName);
+                bookingDTO.setStatus(status);
                 if (userId != -1) {
                     // Sử dụng userId
                     bookingDTO.setUser_id(userId);
@@ -229,13 +232,15 @@ public class TourDetailActivity extends AppCompatActivity {
         tv_startDate.setText(tourDetailResponse.getStart_date());
         tv_days.setText(tourDetailResponse.getDays());
         tv_idTour.setText(String.valueOf(tourDetailResponse.getId()));
-        tv_price.setText(String.valueOf(tourDetailResponse.getPrice()));
+        NumberFormat formatter = NumberFormat.getInstance(new Locale("vi", "VN"));
+        tv_price.setText(formatter.format(tourDetailResponse.getPrice()) + " VNĐ");
         // Để set ảnh, bạn có thể dùng Glide
         Glide.with(this)
                 .load(tourDetailResponse.getImageHeader() != null ? tourDetailResponse.getImageHeader() : R.drawable.placeholder)
                 .into(img_header);
     }
 
+    // Lấy thư viện ảnh
     private void fetchTourImages(int tourId) {
         RetrofitService retrofitService = new RetrofitService();
         TourApi tourApi = retrofitService.getRetrofit().create(TourApi.class);

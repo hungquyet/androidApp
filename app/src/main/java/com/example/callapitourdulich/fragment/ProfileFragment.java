@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -22,7 +23,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.callapitourdulich.R;
 import com.example.callapitourdulich.activity.BookedTourActivity;
-import com.example.callapitourdulich.activity.TourDetailActivity;
+import com.example.callapitourdulich.activity.LoginActivity;
 import com.example.callapitourdulich.api.UserApi;
 import com.example.callapitourdulich.response.UserResponse;
 import com.example.callapitourdulich.retrofit.RetrofitService;
@@ -36,11 +37,9 @@ public class ProfileFragment extends Fragment {
 
     private View mView;
     private ConstraintLayout csl_updateInfo, csl_bookedTour, csl_logOut;
-    private TextInputEditText edt_name, edt_phone, edt_address, edt_email;
-    private RadioGroup rg_gender;
-    private RadioButton rdb_male, rdb_female;
     private String token;
-    private int userId;
+    private TextView tv_nameUser;
+    private UserApi userApi;
 
     @Nullable
     @Override
@@ -56,8 +55,11 @@ public class ProfileFragment extends Fragment {
             return mView;
         }
 
-        initUI();
+        // Khởi tạo Retrofit và UserApi
+        RetrofitService retrofitService = new RetrofitService();
+        userApi = retrofitService.getRetrofit().create(UserApi.class);
 
+        initUI();
         return mView;
     }
 
@@ -65,15 +67,63 @@ public class ProfileFragment extends Fragment {
         csl_updateInfo = mView.findViewById(R.id.csl_updateInfo);
         csl_bookedTour = mView.findViewById(R.id.csl_bookedTour);
         csl_logOut = mView.findViewById(R.id.csl_logOut);
+        tv_nameUser = mView.findViewById(R.id.tv_nameUser);
 
-        csl_updateInfo.setOnClickListener(v -> showUpdateInfoDialog());
+        // Gọi API lấy thông tin người dùng
+        getUserDetails();
+
         csl_bookedTour.setOnClickListener(view -> {
             Intent intent = new Intent(requireContext(), BookedTourActivity.class);
             startActivity(intent);
         });
+
+        csl_logOut.setOnClickListener(v -> {
+            logout();
+        });
     }
 
-    private void showUpdateInfoDialog() {
+    private void getUserDetails() {
+        Log.d("Token", "Bearer " + token);
+        userApi.getUserDetails("Bearer " + token)
+                .enqueue(new Callback<UserResponse>() {
+                    @Override
+                    public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            UserResponse user = response.body();
+
+                            // Lưu userId vào SharedPreferences
+                            saveToSharedPreferences("user_id", user.getId());
+                            Log.d("UserProfile", "User ID: " + user.getId());
+
+                            // Hiển thị tên người dùng trên giao diện
+                            tv_nameUser.setText("Xin chào, " + user.getName());
+
+                            // Gọi hàm showUpdateInfoDialog và truyền dữ liệu vào
+                            csl_updateInfo.setOnClickListener(v -> showUpdateInfoDialog(user));
+                        } else {
+                            // Thêm log để kiểm tra lỗi từ server
+                            Log.e("UserDetails", "Response code: " + response.code());
+                            if (response.errorBody() != null) {
+                                try {
+                                    Log.e("UserDetails", "Error: " + response.errorBody().string());
+                                } catch (Exception e) {
+                                    Log.e("UserDetails", "Error parsing errorBody", e);
+                                }
+                            }
+                            Toast.makeText(requireContext(), "Không thể lấy thông tin người dùng!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<UserResponse> call, Throwable t) {
+                        Log.e("UserDetails", "Lỗi kết nối: " + t.getMessage(), t);
+                        Toast.makeText(requireContext(), "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+
+    private void showUpdateInfoDialog(UserResponse user) {
         Dialog dialog = new Dialog(requireContext());
         dialog.setContentView(R.layout.dialog_update_info);
 
@@ -84,65 +134,37 @@ public class ProfileFragment extends Fragment {
             window.setGravity(Gravity.CENTER);
         }
 
-        // Khai báo các EditText và RadioButton
-        edt_name = dialog.findViewById(R.id.edt_name);
-        edt_phone = dialog.findViewById(R.id.edt_phone);
-        edt_address = dialog.findViewById(R.id.edt_address);
-        edt_email = dialog.findViewById(R.id.edt_note);
-        rg_gender = dialog.findViewById(R.id.rg_gender);
-        rdb_male = dialog.findViewById(R.id.rdb_male);
-        rdb_female = dialog.findViewById(R.id.rdb_female);
+        TextInputEditText edtName = dialog.findViewById(R.id.edt_name);
+        TextInputEditText edtPhone = dialog.findViewById(R.id.edt_phone);
+        TextInputEditText edtAddress = dialog.findViewById(R.id.edt_address);
+        TextInputEditText edtEmail = dialog.findViewById(R.id.edt_note);
+        RadioGroup rgGender = dialog.findViewById(R.id.rg_gender);
+        RadioButton rdbMale = dialog.findViewById(R.id.rdb_male);
+        RadioButton rdbFemale = dialog.findViewById(R.id.rdb_female);
 
-        // Gửi request lấy thông tin người dùng
-        RetrofitService retrofitService = new RetrofitService();
-        UserApi userApi = retrofitService.getRetrofit().create(UserApi.class);
+        edtName.setText(user.getName());
+        edtPhone.setText(user.getPhone());
+        edtEmail.setText(user.getEmail());
+        edtAddress.setText(user.getAddress());
 
-        userApi.getUserDetails("Bearer " + token)
-                .enqueue(new Callback<UserResponse>() {
-                    @Override
-                    public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
-                        if (response.isSuccessful() && response.body() != null) {
-                            UserResponse user = response.body();
+        if ("Nam".equalsIgnoreCase(user.getGender())) {
+            rdbMale.setChecked(true);
+        } else if ("Nữ".equalsIgnoreCase(user.getGender())) {
+            rdbFemale.setChecked(true);
+        }
 
-                            // Lưu userId vào SharedPreferences
-                            SharedPreferences sharedPreferences = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
-                            SharedPreferences.Editor editor = sharedPreferences.edit();
-                            editor.putInt("user_id", userId); // userId là giá trị bạn muốn lưu
-                            editor.apply(); // Lưu thay đổi vào SharedPreferences
-                            Log.d("UserProfile", "User ID: " + userId);
-
-                            // Điền dữ liệu vào các trường trong dialog
-                            edt_name.setText(user.getName());
-                            edt_phone.setText(user.getPhone());
-                            edt_email.setText(user.getEmail());
-                            edt_address.setText(user.getAddress());
-
-                            if ("Nam".equalsIgnoreCase(user.getGender())) {
-                                rdb_male.setChecked(true);
-                            } else if ("Nữ".equalsIgnoreCase(user.getGender())) {
-                                rdb_female.setChecked(true);
-                            }
-                        } else {
-                            Toast.makeText(requireContext(), "Không thể lấy thông tin người dùng!", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<UserResponse> call, Throwable t) {
-                        Toast.makeText(requireContext(), "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-        // Xử lý sự kiện nút "Hoàn tất"
         dialog.findViewById(R.id.btn_completeBooking).setOnClickListener(view -> {
-            // Lấy dữ liệu từ các trường
-            String name = edt_name.getText().toString();
-            String phone = edt_phone.getText().toString();
-            String address = edt_address.getText().toString();
-            String email = edt_email.getText().toString();
-            String gender = rdb_male.isChecked() ? "Nam" : "Nữ";
+            String name = edtName.getText().toString();
+            String phone = edtPhone.getText().toString();
+            String address = edtAddress.getText().toString();
+            String email = edtEmail.getText().toString();
+            String gender = rdbMale.isChecked() ? "Nam" : "Nữ";
 
-            // Tạo đối tượng UserResponse để gửi
+            if (!phone.matches("0\\d{9}")) {
+                Toast.makeText(requireContext(), "Số điện thoại không đúng định dạng!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             UserResponse updatedUser = new UserResponse();
             updatedUser.setName(name);
             updatedUser.setPhone(phone);
@@ -150,26 +172,48 @@ public class ProfileFragment extends Fragment {
             updatedUser.setEmail(email);
             updatedUser.setGender(gender);
 
-            userApi.updateUserDetails(userId, "Bearer " + token, updatedUser)
-                    .enqueue(new Callback<UserResponse>() {
-                        @Override
-                        public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
-                            if (response.isSuccessful() && response.body() != null) {
-                                Toast.makeText(requireContext(), "Cập nhật thành công!", Toast.LENGTH_SHORT).show();
-                                dialog.dismiss();
-
-
-                            } else {
-                                Toast.makeText(requireContext(), "Cập nhật thất bại!", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<UserResponse> call, Throwable t) {
-                            Log.e("UserUpdate", "Lỗi kết nối: " + t.getMessage(), t);
-                        }
-                    });
+            updateUserDetails(user.getId(), updatedUser, dialog);
         });
+
         dialog.show();
+    }
+
+    private void updateUserDetails(int userId, UserResponse updatedUser, Dialog dialog) {
+        userApi.updateUserDetails(userId, "Bearer " + token, updatedUser)
+                .enqueue(new Callback<UserResponse>() {
+                    @Override
+                    public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            UserResponse updatedUserResponse = response.body();
+                            tv_nameUser.setText("Xin chào, " + updatedUserResponse.getName());
+                            getUserDetails();
+                            Toast.makeText(requireContext(), "Cập nhật thành công!", Toast.LENGTH_SHORT).show();
+                            dialog.dismiss();
+                        } else {
+                            Toast.makeText(requireContext(), "Cập nhật thất bại!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<UserResponse> call, Throwable t) {
+                        Log.e("UserUpdate", "Lỗi kết nối: " + t.getMessage(), t);
+                    }
+                });
+    }
+
+    private void saveToSharedPreferences(String key, int value) {
+        SharedPreferences sharedPreferences = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(key, value);
+        editor.apply();
+    }
+
+    private void logout() {
+        SharedPreferences sharedPreferences = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
+        sharedPreferences.edit().clear().apply();
+
+        Intent intent = new Intent(requireContext(), LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
     }
 }

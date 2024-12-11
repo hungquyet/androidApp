@@ -66,53 +66,56 @@ public class LoginActivity extends AppCompatActivity {
             if (phoneNumber.isEmpty() || password.isEmpty()) {
                 Toast.makeText(LoginActivity.this, "Vui lòng nhập đầy đủ số điện thoại và mật khẩu!", Toast.LENGTH_SHORT).show();
                 return; // Dừng thực hiện nếu chưa nhập đầy đủ thông tin
-            }
+            } else if (!phoneNumber.matches("^0\\d{9}$")) {
+                // Số điện thoại không đúng định dạng
+                Toast.makeText(LoginActivity.this, "Số điện thoại không đúng định dạng!", Toast.LENGTH_SHORT).show();
+            } else {
+                UserDTO userDTO = new UserDTO();
+                userDTO.setPhone(phoneNumber);
+                userDTO.setPassword(password);
 
-            UserDTO userDTO = new UserDTO();
-            userDTO.setPhone(phoneNumber);
-            userDTO.setPassword(password);
+                userApi.login(userDTO).enqueue(new Callback<LoginResponse>() {
+                    @Override
+                    public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+                        if (response.isSuccessful()) {
+                            LoginResponse loginResponse = response.body();
+                            if (loginResponse != null && loginResponse.getToken() != null) {
+                                String token = loginResponse.getToken();
 
-            userApi.login(userDTO).enqueue(new Callback<LoginResponse>() {
-                @Override
-                public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
-                    if (response.isSuccessful()) {
-                        LoginResponse loginResponse = response.body();
-                        if (loginResponse != null && loginResponse.getToken() != null) {
-                            String token = loginResponse.getToken();
+                                // Lưu token vào SharedPreferences
+                                SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                editor.putString("token", token);
+                                editor.apply();
 
-                            // Lưu token vào SharedPreferences
-                            SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
-                            SharedPreferences.Editor editor = sharedPreferences.edit();
-                            editor.putString("token", token);
-                            editor.apply();
-
-                            Toast.makeText(LoginActivity.this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
-                            Log.d("LoginResponse", "Token: " + token); // In token ra log
-                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                            intent.putExtra("token", token);
-                            startActivity(intent);
-                            finish();
+                                Toast.makeText(LoginActivity.this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
+                                Log.d("LoginResponse", "Token: " + token); // In token ra log
+                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                intent.putExtra("token", token);
+                                startActivity(intent);
+                                finish();
+                            } else {
+                                Toast.makeText(LoginActivity.this, "Đăng nhập thất bại! Token không hợp lệ.", Toast.LENGTH_SHORT).show();
+                            }
                         } else {
-                            Toast.makeText(LoginActivity.this, "Đăng nhập thất bại! Token không hợp lệ.", Toast.LENGTH_SHORT).show();
+                            try {
+                                String errorBody = response.errorBody().string(); // Lấy body lỗi từ response
+                                Log.e("LoginError", "Error Body: " + errorBody); // In thông báo lỗi ra log
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            Toast.makeText(LoginActivity.this, "Sai tài khoản hoặc mật khẩu!", Toast.LENGTH_SHORT).show();
                         }
-                    } else {
-                        try {
-                            String errorBody = response.errorBody().string(); // Lấy body lỗi từ response
-                            Log.e("LoginError", "Error Body: " + errorBody); // In thông báo lỗi ra log
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        Toast.makeText(LoginActivity.this, "Đăng nhập thất bại! Mã lỗi: " + response.code(), Toast.LENGTH_SHORT).show();
                     }
-                }
 
-                @Override
-                public void onFailure(Call<LoginResponse> call, Throwable throwable) {
-                    Toast.makeText(LoginActivity.this, "Số điện thoại hoặc mật khẩu không chính xác!", Toast.LENGTH_SHORT).show();
-                    Log.e("LoginError", "Error: " + throwable.getMessage()); // In chi tiết lỗi
-                    throwable.printStackTrace();
-                }
-            });
+                    @Override
+                    public void onFailure(Call<LoginResponse> call, Throwable throwable) {
+                        Toast.makeText(LoginActivity.this, "Số điện thoại hoặc mật khẩu không chính xác!", Toast.LENGTH_SHORT).show();
+                        Log.e("LoginError", "Error: " + throwable.getMessage()); // In chi tiết lỗi
+                        throwable.printStackTrace();
+                    }
+                });
+            }
         });
 
         tv_register.setOnClickListener(view -> {

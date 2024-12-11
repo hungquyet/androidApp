@@ -9,7 +9,7 @@
     <string name="required_name_hint">Họ &amp; tên <font color="#FF0000">*</font></string>
     <string name="required_phonenumber_hint">Điện thoại <font color="#FF0000">*</font></string>
     <string name="required_email_hint">Email <font color="#FF0000">*</font></string>
-    <string name="required_notes_hint">Ghi chú <font color="#FF0000">*</font></string>
+    <string name="required_notes_hint">Ghi chú</string>
     <string name="required_password_hint">Mật khẩu <font color="#FF0000">*</font></string>
     <string name="required_confirmpassword_hint">Xác nhận mật khẩu <font color="#FF0000">*</font></string>
     <string name="call_advise">Chúng tôi sẽ gọi điện tư vấn &amp; xác nhận</string>

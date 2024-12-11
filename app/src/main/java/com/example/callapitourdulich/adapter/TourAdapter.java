@@ -14,7 +14,9 @@ import com.example.callapitourdulich.R;
 import com.example.callapitourdulich.activity.TourDetailActivity;
 import com.example.callapitourdulich.model.Tour;
 
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 
 public class TourAdapter extends RecyclerView.Adapter<TourViewHolder> {
 
@@ -38,8 +40,9 @@ public class TourAdapter extends RecyclerView.Adapter<TourViewHolder> {
         Tour tour = tourList.get(position);
         Log.d("TOUR_BIND", "Binding tour at position " + position + ": " + tour.getTour_name());
         holder.tv_name.setText(tour.getTour_name());
-        holder.tv_descriptionTour.setText(tour.getDescription());
-        holder.tv_price.setText(String.valueOf((float) tour.getPrice()));
+        holder.tv_day.setText(tour.getDays());
+        NumberFormat formatter = NumberFormat.getInstance(new Locale("vi", "VN"));
+        holder.tv_price.setText(formatter.format(tour.getPrice()) + " VNĐ");
 
 
         String imageUrl = tour.getImageHeader();

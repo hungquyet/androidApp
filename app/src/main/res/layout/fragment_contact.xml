@@ -1,6 +1,181 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-</LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="8sp">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="PHÚ YÊN TOUR"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:textAlignment="center"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="PHÚ YÊN TOUR?"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:textSize="16sp"/>
+        <!-- View để làm gạch chân màu vàng -->
+        <View
+            android:layout_width="100dp"
+            android:layout_height="4dp"
+            android:layout_marginTop="4dp"
+            android:background="#FFC107" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Phú Yên Tour là thương hiệu của Công ty cổ phần Quy Nhơn Tourist tại Phú Yên, được thành lập bởi đội ngũ nhân viên trẻ trung người bản địa, am hiểu các điểm du lịch tại Phú Yên cũng như vùng đất Xứ Nẫu (Bình Định – Phú Yên), có kinh nghiệm tổ chức tour từ lúc Du lịch Phú Yên mới phát triển. Điểm đặc biệt tại Phú Yên Tour chính là đơn vị cung cấp Land tour Phú Yên cho các đối tác phương xa hàng đầu tại Phú Yên. Chúng tôi luôn có các gói tour giá cạnh tranh nhưng chất lượng đảm bảo cho các đối tác du lịch. Hãy đến với Phú Yên Tour để được phục vụ tốt nhất cho chuyến đi du lịch Phú Yên sắp tới của Bạn"
+            android:textColor="@color/black"
+            android:textSize="14sp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tại sao lựa chọn PHÚ YÊN TOUR?"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:textSize="16sp"/>
+
+        <View
+            android:layout_width="100dp"
+            android:layout_height="4dp"
+            android:layout_marginTop="4dp"
+            android:background="#FFC107" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Phú Yên Tour là một trong những đơn vị lữ hành uy tín hàng đầu tại Phú Yên, tổ chức các tour du lịch ghép lẻ tại Phú Yên khởi hành hàng ngày với đội ngũ hướng dẫn viên chuyên nghiệp, có kinh nghiệm, am hiểu văn hóa lịch sử Bình Định – Phú Yên.
+            \nPhú Yên Tour luôn ưu tiên các đối tác du lịch có nhu cầu tổ chức tour du lịch tại Phú Yên. Chúng tôi luôn hỗ trợ đặc biệt với các đối tác đặc biệt là các vấn đề về Tour trọn gói, phòng khách sạn, dịch vụ thuê xe Phú Yên, Teambuilding Phú Yên, Gala Dinner v.v…
+            \nPhú Yên Tour với đội ngũ nhân viên trẻ trung, năng động, luôn làm việc năng lượng và chuyên nghiệp, phục vụ khách hàng nhiệt tình các vấn đề khi đi du lịch Phú Yên."
+            android:textColor="@color/black"
+            android:textSize="14sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Những giá trị mà PHÚ YÊN TOUR mang lại cho bạn"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:textSize="16sp"/>
+
+        <View
+            android:layout_width="100dp"
+            android:layout_height="4dp"
+            android:layout_marginTop="4dp"
+            android:background="#FFC107"
+            android:layout_marginBottom="6dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Mục Tiện Lợi -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/border_tv"> <!-- Sử dụng viền -->
+
+                <TextView
+                    android:id="@+id/title_tien_loi"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="✔️ TIỆN LỢI"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/black" />
+
+                <TextView
+                    android:id="@+id/content_tien_loi"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Nếu bạn đi nhóm nhỏ mà không biết đặt tour tại đâu, không biết công ty nào tổ chức tốt tại Phú Yên, với lại không biết chắc chắn ngày đó có tour bạn mong muốn hay không, bạn phải gọi nhiều nơi dò hỏi, tham khảo nên rất mất thời gian. Nay với PHÚ YÊN TOUR bạn chỉ cần đặt với chúng tôi, dù bạn muốn đi đâu tại Phú Yên hay đi bao nhiêu người, chúng tôi đều vẫn sẽ tổ chức cho bạn, vô cùng tiện lợi."
+                    android:textSize="14sp"
+                    android:layout_marginTop="8dp"
+                    android:textColor="@android:color/black" />
+            </LinearLayout>
+
+            <!-- Mục Tiết Kiệm -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/border_tv"> <!-- Sử dụng viền -->
+
+                <TextView
+                    android:id="@+id/title_tiet_kiem"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="✔️ TIẾT KIỆM"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/black" />
+
+                <TextView
+                    android:id="@+id/content_tiet_kiem"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Không còn phải tìm và so sánh giá tour ở nhiều nơi khác nhau để tìm ra giá tốt. Với PHÚ YÊN TOUR, chúng tôi đảm bảo bạn có giá TỐT NHẤT cho chuyến đi của mình. Không những thế, PHÚ YÊN TOUR còn cung cấp nhiều quà tặng hấp dẫn như nước suối, khăn lạnh, các trò chơi trên biển, mũ lát du lịch…, giúp bạn tiết kiệm được rất nhiều chi phí cho chuyến đi"
+                    android:textColor="@android:color/black"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <!-- Mục Hỗ Trợ Tối Đa -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/border_tv"> <!-- Sử dụng viền -->
+
+                <TextView
+                    android:id="@+id/title_ho_tro"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="✔️ HỖ TRỢ TỐI ĐA"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/content_ho_tro"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Các tư vấn viên của PHÚ YÊN TOUR luôn sẵn sàng hỗ trợ khách hàng 24/7 trong việc thay đổi giờ đi tour, thay đổi bữa ăn…  Chúng tôi cũng là những chuyên gia tư vấn du lịch tại Phú Yên, giúp bạn có được những thông tin cập nhật, hấp dẫn nhất cho mỗi chuyến đi của mình."
+                    android:textColor="@android:color/black"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Du lịch Phú Yên gọi ngay 0899 0899 40 để PHÚ YÊN TOUR giúp bạn có một kỳ nghỉ thoải mái nhất"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:textAlignment="center"
+                android:textStyle="bold"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+
+
+</androidx.core.widget.NestedScrollView>

@@ -12,9 +12,10 @@ public class BookingDTO {
     private int amount;
     private String notes;
     private String start_date;
+    private String status;
 
     public BookingDTO(int user_id, int tour_id, String tour_name, String full_name,
-                      String phone_number, int amount, String notes, String start_date) {
+                      String phone_number, int amount, String notes, String start_date, String status) {
         this.user_id = user_id;
         this.tour_id = tour_id;
         this.tour_name = tour_name;
@@ -23,6 +24,15 @@ public class BookingDTO {
         this.amount = amount;
         this.notes = notes;
         this.start_date = start_date;
+        this.status = status;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public int getUser_id() {

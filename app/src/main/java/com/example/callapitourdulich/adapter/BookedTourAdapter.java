@@ -13,7 +13,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.callapitourdulich.R;
 import com.example.callapitourdulich.response.BookedTourResponse;
 
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 
 public class BookedTourAdapter extends RecyclerView.Adapter<BookedTourAdapter.ViewHolder> {
 
@@ -38,10 +40,9 @@ public class BookedTourAdapter extends RecyclerView.Adapter<BookedTourAdapter.Vi
 
         holder.tvName.setText(tour.getTour_name());
         holder.tvStatus.setText(tour.getStatus());
-        holder.tvTotalPrice.setText(String.format("Giá: %.0f VND", tour.getTotal_price()));
-
-        // Nếu bạn có URL ảnh, sử dụng thư viện như Glide hoặc Picasso để tải ảnh:
-        // Glide.with(context).load(tour.getImageUrl()).into(holder.imgTour);
+        NumberFormat formatter = NumberFormat.getInstance(new Locale("vi", "VN"));
+        holder.tvTotalPrice.setText(formatter.format(tour.getTotal_price()) + " VNĐ");
+        holder.tvBookingTime.setText(tour.getBooking_time());
     }
 
     @Override
@@ -50,7 +51,7 @@ public class BookedTourAdapter extends RecyclerView.Adapter<BookedTourAdapter.Vi
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvName, tvStatus, tvTotalPrice;
+        TextView tvName, tvStatus, tvTotalPrice, tvBookingTime;
         ImageView imgTour;
 
         public ViewHolder(@NonNull View itemView) {
@@ -58,6 +59,7 @@ public class BookedTourAdapter extends RecyclerView.Adapter<BookedTourAdapter.Vi
             tvName = itemView.findViewById(R.id.tv_nameBookedTour);
             tvStatus = itemView.findViewById(R.id.tv_status);
             tvTotalPrice = itemView.findViewById(R.id.tv_totalPrice);
+            tvBookingTime = itemView.findViewById(R.id.tv_bookingTime);
             imgTour = itemView.findViewById(R.id.img_tour);
         }
     }
